@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>查詢表單</title>
+  <!-- 引入最新版本的 Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    /* 為表單添加邊框 */
+    .form-container {
+      border: 1px solid #ddd;
+      padding: 20px;
+      border-radius: 8px;
+    }
+    .results-container {
+      margin-top: 30px;
+    }
+    .table th, .table td {
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="container mt-5">
+    <div class="form-container">
+      <h2 class="text-primary text-center">彰化公車時刻表</h2>
+      <form id="query-form">
+        <!-- 出發地 label 和 select -->
+        <div class="mb-3">
+          <label for="departure" class="form-label">出發</label>
+          <select class="form-select" id="departure">
+            <option value="員林">員林</option>
+          </select>
+        </div>
+
+        <!-- 抵達地 label 和 select -->
+        <div class="mb-3">
+          <label for="destination" class="form-label">抵達</label>
+          <select class="form-select" id="destination">
+            <option value="社頭">社頭</option>
+          </select>
+        </div>
+
+        <!-- 出發日期 label 和 input -->
+        <div class="mb-3">
+          <label for="departure-date" class="form-label">出發日期</label>
+          <input type="date" class="form-control" id="departure-date">
+        </div>
+
+        <!-- 出發時間 label 和 input -->
+        <div class="mb-3">
+          <label for="departure-time" class="form-label">出發時間</label>
+          <input type="time" class="form-control" id="departure-time">
+        </div>
+
+        <!-- 查詢按鈕 -->
+        <div class="d-flex justify-content-center">
+          <button type="submit" class="btn btn-primary">查詢</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- 模擬記錄結果區域 -->
+    <div id="results" class="results-container"></div>
+  </div>
+
+  <!-- 引入 Bootstrap 的 JavaScript -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    document.getElementById("query-form").addEventListener("submit", function(event) {
+      event.preventDefault(); // 防止表單提交刷新頁面
+
+      // 清除之前的結果
+      document.getElementById("results").innerHTML = "";
+
+      // 時間變數
+      let departureTime = 11; // 出發時間從 11:00 開始
+      let records = [];
+
+      // 生成5筆模擬記錄
+      for (let i = 0; i < 5; i++) {
+        let departureHour = departureTime;
+        let departureMinute = "00";
+        let arrivalHour = departureTime + 0.5; // 每筆記錄增加半小時
+        let arrivalMinute = "30";
+
+        // 隨機生成四位公車號碼
+        let busNumber = Math.floor(Math.random() * 9000) + 1000;
+
+        let record = {
+          serialNumber: i + 1, // 流水號從1開始
+          departureTime: `${departureHour}:${departureMinute}`,
+          arrivalTime: `${Math.floor(arrivalHour)}:${arrivalMinute}`,
+          busNumber: busNumber
+        };
+
+        records.push(record);
+        departureTime += 0.5; // 下筆記錄的出發時間增加 30 分鐘
+      }
+
+      // 顯示結果
+      let resultHtml = '<h3>查詢結果：</h3><table class="table table-bordered">';
+      resultHtml += '<thead><tr><th>流水號</th><th>出發時間</th><th>抵達時間</th><th>公車號碼</th></tr></thead><tbody>';
+
+      records.forEach(record => {
+        resultHtml += `<tr>
+                         <td>${record.serialNumber}</td>
+                         <td>${record.departureTime}</td>
+                         <td>${record.arrivalTime}</td>
+                         <td>${record.busNumber}</td>
+                       </tr>`;
+      });
+
+      resultHtml += '</tbody></table>';
+      document.getElementById("results").innerHTML = resultHtml;
+    });
+  </script>
+</body>
+</html>
+
