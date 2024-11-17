@@ -16,8 +16,19 @@
     .results-container {
       margin-top: 30px;
     }
-    .table th, .table td {
+    .table th {
+      background-color: #007bff;
+      color: #fff;
       text-align: center;
+    }
+    .table td {
+      text-align: center;
+    }
+    .table-striped tbody tr:nth-of-type(odd) {
+      background-color: rgba(0, 0, 255, 0.1);
+    }
+    .table-striped tbody tr:nth-of-type(even) {
+      background-color: rgba(0, 255, 0, 0.1);
     }
   </style>
 </head>
@@ -31,6 +42,11 @@
           <label for="departure" class="form-label">出發</label>
           <select class="form-select" id="departure">
             <option value="員林">員林</option>
+            <option value="田中">田中</option>
+            <option value="二林">二林</option>
+            <option value="北斗">北斗</option>
+            <option value="溪湖">溪湖</option>
+            <option value="彰化">彰化</option>
           </select>
         </div>
 
@@ -38,7 +54,12 @@
         <div class="mb-3">
           <label for="destination" class="form-label">抵達</label>
           <select class="form-select" id="destination">
-            <option value="社頭">社頭</option>
+            <option value="員林">員林</option>
+            <option value="田中">田中</option>
+            <option value="二林">二林</option>
+            <option value="北斗">北斗</option>
+            <option value="溪湖">溪湖</option>
+            <option value="彰化">彰化</option>
           </select>
         </div>
 
@@ -71,36 +92,40 @@
     document.getElementById("query-form").addEventListener("submit", function(event) {
       event.preventDefault(); // 防止表單提交刷新頁面
 
+      // 隱藏查詢介面
+      document.querySelector(".form-container").style.display = "none";
+
       // 清除之前的結果
       document.getElementById("results").innerHTML = "";
 
       // 時間變數
-      let departureTime = 11; // 出發時間從 11:00 開始
+      let departureTime = 11 * 60; // 以分鐘為單位，11:00 = 660 分鐘
       let records = [];
 
-      // 生成5筆模擬記錄
-      for (let i = 0; i < 5; i++) {
-        let departureHour = departureTime;
-        let departureMinute = "00";
-        let arrivalHour = departureTime + 0.5; // 每筆記錄增加半小時
-        let arrivalMinute = "30";
+      // 生成15筆模擬記錄
+      for (let i = 0; i < 15; i++) {
+        let departureHour = Math.floor(departureTime / 60);
+        let departureMinute = departureTime % 60;
+        let arrivalTime = departureTime + 30; // 每筆記錄增加 30 分鐘
+        let arrivalHour = Math.floor(arrivalTime / 60);
+        let arrivalMinute = arrivalTime % 60;
 
         // 隨機生成四位公車號碼
         let busNumber = Math.floor(Math.random() * 9000) + 1000;
 
         let record = {
-          serialNumber: i + 1, // 流水號從1開始
-          departureTime: `${departureHour}:${departureMinute}`,
-          arrivalTime: `${Math.floor(arrivalHour)}:${arrivalMinute}`,
+          serialNumber: i + 1,
+          departureTime: `${departureHour.toString().padStart(2, '0')}:${departureMinute.toString().padStart(2, '0')}`,
+          arrivalTime: `${arrivalHour.toString().padStart(2, '0')}:${arrivalMinute.toString().padStart(2, '0')}`,
           busNumber: busNumber
         };
 
         records.push(record);
-        departureTime += 0.5; // 下筆記錄的出發時間增加 30 分鐘
+        departureTime += 30; // 下筆記錄的出發時間增加 30 分鐘
       }
 
       // 顯示結果
-      let resultHtml = '<h3>查詢結果：</h3><table class="table table-bordered">';
+      let resultHtml = '<h3>查詢結果：員林→北斗</h3><table class="table table-striped table-bordered">';
       resultHtml += '<thead><tr><th>流水號</th><th>出發時間</th><th>抵達時間</th><th>公車號碼</th></tr></thead><tbody>';
 
       records.forEach(record => {
@@ -118,4 +143,3 @@
   </script>
 </body>
 </html>
-
